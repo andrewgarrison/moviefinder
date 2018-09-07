@@ -1,0 +1,70 @@
+@import url("https://use.typekit.net/qqp0ykk.css");
+
+body {
+    font-family: "futura-pt", sans-serif;
+}
+
+.container {
+    margin: 0 160px;
+}
+
+.c-search {
+    margin: 60px 0; 
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &__input {
+        padding: 10px;
+        width: 80%;
+        font-size: 16px;
+        font-family: "futura-pt";
+
+        &:focus {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    &__submit {
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 4px;
+        margin-left: 10px;
+        font-size: 16px;
+        background-color: #DB3933;
+        cursor: pointer;
+        color: #FCFCFC;
+        font-family: "futura-pt";
+    }
+}
+
+.c-results {
+    display: block;
+    margin: 0 auto;
+    text-align: center; 
+
+    @media (min-width: 1060px) {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 40px;
+    }
+
+    @media (min-width: 1360px) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 60px;
+    }
+
+    .c-result {
+        padding: 16px;
+        margin: 20px 0;
+        border-radius: 5px;
+        height: auto;
+        background-color: #fff;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+}
