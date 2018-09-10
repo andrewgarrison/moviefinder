@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Switch, Link, HashRouter, Route, BrowserRouter as Router } from 'react-router-dom';
+import queryString from 'query-string';
 import './App.less';
 
 class MovieSearch extends Component {
@@ -17,7 +19,7 @@ class MovieSearch extends Component {
   }
 
   getMovieResults() {
-    fetch('https://api.themoviedb.org/3/search/movie?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US&query=' + this.state.inputValue + '&page=1&include_adult=false')
+    fetch('https://api.themoviedb.org/3/search/movie?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US&query=' + this.state.inputValue)
     .then(results => {
       return results.json();
     }).then(data => {
@@ -25,7 +27,9 @@ class MovieSearch extends Component {
         console.log(movie);
         let posterPath = 'https://image.tmdb.org/t/p/w185_and_h278_bestv2/' + movie.poster_path;
         return (
-          <MovieCard key={movie.id} name={movie.original_title} overview={movie.overview} poster={posterPath} rating={movie.vote_average}/>
+            <Link key={movie.id} to={`/movie/id=${movie.id}`}>
+              <MovieCard name={movie.original_title} overview={movie.overview} poster={posterPath} rating={movie.vote_average}/>
+            </Link>
         )
       });
       this.setState({movieResponse: movies})
@@ -42,6 +46,46 @@ class MovieSearch extends Component {
         <div className='c-results'>
           {this.state.movieResponse}
         </div>
+      </div>
+    );
+  }
+}
+
+class Movie extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      movieResponse: []
+    };
+  }
+
+  getQueryString() {
+    const url = window.location.href;
+    let id = url.substring(url.indexOf("=") + 1, url.length);
+    return id;
+  }
+
+  componentDidMount() {
+    fetch('https://api.themoviedb.org/3/movie/' + this.getQueryString() + '?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US')
+    .then(results => {
+      console.log(results);
+      return results.json();
+    }).then(data => {
+        this.setState({movieResponse: data})
+      });
+  }
+
+  getPosterPath() {
+    let baseUrl = 'https://image.tmdb.org/t/p/w185_and_h278_bestv2/';
+    return baseUrl + this.state.movieResponse.poster_path;
+  }
+
+  render() {
+    return (
+      <div className='single-movie-page'>
+        <h1>{this.state.movieResponse.original_title}</h1>
+        <img src={this.getPosterPath()} alt={this.state.movieResponse.original_title}/>
+        <p>{this.state.movieResponse.overview}</p>
       </div>
     );
   }
@@ -71,13 +115,25 @@ class MovieCard extends Component {
   }
 }
 
-class App extends Component {
+class Main extends Component {
   render() {
     return (
       <div className='container'>
-        <h1>Cast Movie App</h1>
-        <MovieSearch />
+        <Switch>
+          <Route exact path='/' component={MovieSearch}/>
+          <Route path='/movie/id=:number' component={Movie}/>
+        </Switch>
       </div>
+    )
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <HashRouter>
+        <Main/>
+      </HashRouter>
     );
   }
 }
