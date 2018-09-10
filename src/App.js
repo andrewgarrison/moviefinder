@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Link, HashRouter, Route, BrowserRouter as Router } from 'react-router-dom';
-import queryString from 'query-string';
+import { Switch, Link, HashRouter, Route } from 'react-router-dom';
 import './App.less';
 
 class MovieSearch extends Component {
