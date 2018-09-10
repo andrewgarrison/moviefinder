@@ -22,16 +22,19 @@ class MovieSearch extends Component {
     .then(results => {
       return results.json();
     }).then(data => {
-      let movies = data.results.map((movie) => {
-        console.log(movie);
-        let posterPath = 'https://image.tmdb.org/t/p/w185_and_h278_bestv2/' + movie.poster_path;
-        return (
-            <Link key={movie.id} to={`/movie/id=${movie.id}`}>
-              <MovieCard name={movie.original_title} overview={movie.overview} poster={posterPath} rating={movie.vote_average}/>
-            </Link>
-        )
-      });
-      this.setState({movieResponse: movies})
+      if (data.results && data.results.length > 0) {
+        let movies = data.results.map((movie) => {
+          let posterPath = 'https://image.tmdb.org/t/p/w185_and_h278_bestv2/' + movie.poster_path;
+          return (
+              <Link key={movie.id} to={`/item/${movie.id}`}>
+                <MovieCard name={movie.original_title} overview={movie.overview} poster={posterPath} rating={movie.vote_average}/>
+              </Link>
+          )
+        });
+        this.setState({movieResponse: movies})
+      } else {
+        this.setState({movieResponse: `Sorry! We couldn't find a movie title matching "${this.state.inputValue}". Please update your search and try again.`})
+      }
     })
   }
 
@@ -60,31 +63,31 @@ class Movie extends Component {
 
   getQueryString() {
     const url = window.location.href;
-    let id = url.substring(url.indexOf("=") + 1, url.length);
+    let id = url.substring(url.indexOf("item") + 5, url.length);
     return id;
   }
 
   componentDidMount() {
     fetch('https://api.themoviedb.org/3/movie/' + this.getQueryString() + '?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US')
     .then(results => {
-      console.log(results);
       return results.json();
     }).then(data => {
-        this.setState({movieResponse: data})
-      });
-  }
-
-  getPosterPath() {
-    let baseUrl = 'https://image.tmdb.org/t/p/w185_and_h278_bestv2/';
-    return baseUrl + this.state.movieResponse.poster_path;
+        // Make a subsequent request to imdb to get improved movie data
+        fetch('http://www.omdbapi.com/?i=' + data.imdb_id + '&apikey=dbbd0a02')
+        .then(imdb_results => {
+          return imdb_results.json();
+        }).then(imdb_data => {
+          this.setState({movieResponse: imdb_data})
+        });
+    })
   }
 
   render() {
     return (
       <div className='single-movie-page'>
-        <h1>{this.state.movieResponse.original_title}</h1>
-        <img src={this.getPosterPath()} alt={this.state.movieResponse.original_title}/>
-        <p>{this.state.movieResponse.overview}</p>
+        <h1>{this.state.movieResponse.Title}</h1>
+        <img src={this.state.movieResponse.Poster} alt={this.state.movieResponse.Title}/>
+        <p>{this.state.movieResponse.Plot}</p>
       </div>
     );
   }
@@ -120,7 +123,7 @@ class Main extends Component {
       <div className='container'>
         <Switch>
           <Route exact path='/' component={MovieSearch}/>
-          <Route path='/movie/id=:number' component={Movie}/>
+          <Route path='/item/:number' component={Movie}/>
         </Switch>
       </div>
     )
