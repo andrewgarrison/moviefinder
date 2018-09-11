@@ -24,10 +24,10 @@ class MovieSearch extends Component {
     }).then(data => {
       if (data.results && data.results.length > 0) {
         let movies = data.results.map((movie) => {
-          let posterPath = 'https://image.tmdb.org/t/p/w185_and_h278_bestv2/' + movie.poster_path;
+          let posterPath = 'https://image.tmdb.org/t/p/w342' + movie.poster_path;
           return (
-              <Link key={movie.id} to={`/item/${movie.id}`}>
-                <MovieCard name={movie.original_title} overview={movie.overview} poster={posterPath} rating={movie.vote_average}/>
+              <Link className='c-result__link' key={movie.id} to={`/item/${movie.id}`}>
+                <MovieCard name={movie.original_title} poster={posterPath} rating={movie.vote_average}/>
               </Link>
           )
         });
@@ -53,7 +53,34 @@ class MovieSearch extends Component {
   }
 }
 
-class Movie extends Component {
+class MovieCard extends Component {
+  trim(text) {
+    let textLength = text.length;
+    let trimmedOverview = text.substring(0, 18);
+
+    if (textLength > 18) {
+      return trimmedOverview + '...';
+    } 
+
+    return text;
+  }
+
+  render() {
+    return (
+      <div className='c-result'>
+        <div className='c-result__image'>
+          <img src={this.props.poster} alt={this.props.name}/>
+        </div>
+        <div className='c-result__info'>
+          <h2 className='c-result__title'>{this.trim(this.props.name)}</h2>
+          <span className='c-result__rating'>TMDb Rating: <strong>{this.props.rating}</strong></span>
+        </div>
+      </div>
+    );
+  }
+}
+
+class MoviePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -93,37 +120,13 @@ class Movie extends Component {
   }
 }
 
-class MovieCard extends Component {
-  trim(text) {
-    let textLength = text.length;
-    let trimmedOverview = text.substring(0, 150);
-
-    if (textLength > 150) {
-      return trimmedOverview + '...';
-    } 
-
-    return text;
-  }
-
-  render() {
-    return (
-      <div className='c-result'>
-        <img src={this.props.poster} alt={this.props.name}/>
-        <h2>{this.props.name}</h2>
-        <span>{this.props.rating}</span>
-        <p>{this.trim(this.props.overview)}</p>
-      </div>
-    );
-  }
-}
-
 class Main extends Component {
   render() {
     return (
       <div className='container'>
         <Switch>
           <Route exact path='/' component={MovieSearch}/>
-          <Route path='/item/:number' component={Movie}/>
+          <Route path='/item/:number' component={MoviePage}/>
         </Switch>
       </div>
     )

@@ -2,6 +2,7 @@
 
 body {
     font-family: "futura-pt", sans-serif;
+    background-color: #ececec;
 }
 
 .container {
@@ -45,26 +46,42 @@ body {
 .c-results {
     display: block;
     margin: 0 auto;
-    text-align: center; 
 
-    @media (min-width: 1060px) {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 40px;
-    }
-
-    @media (min-width: 1360px) {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 60px;
+    @media (min-width: 960px) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
     .c-result {
-        padding: 16px;
-        margin: 20px 0;
-        border-radius: 5px;
+        width: 333px;
         height: auto;
+        margin: 20px;
         background-color: #fff;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.05), 0 10px 10px rgba(0,0,0,0.02);
+
+        &__link {
+            text-decoration: none;
+            color: #333;
+        }
+
+        &__image {
+            padding: 0;
+
+            img {
+                max-width: 100%;
+                display: block;
+            }
+        }
+
+        &__info {
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        &__title {
+            margin-top: 0;
+        }
     }
 }
