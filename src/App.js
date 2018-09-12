@@ -40,7 +40,7 @@ class MovieSearch extends Component {
 
   render() {
     return (
-      <div className='movie-search-results'>
+      <div className='container'>
         <div className='c-search'>
           <input type="text" value={this.state.inputValue} onChange={evt => this.updateInputValue(evt)} className='c-search__input' placeholder='Search for Movies'></input>
           <button className='c-search__submit' onClick={() => this.getMovieResults()}>Find Movie</button>
@@ -84,7 +84,8 @@ class MoviePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      movieResponse: []
+      movieResponse: [],
+      movieBackdrop: ''
     };
   }
 
@@ -99,6 +100,9 @@ class MoviePage extends Component {
     .then(results => {
       return results.json();
     }).then(data => {
+        // store tmdb backdrop
+        this.setState({movieBackdrop: data.backdrop_path})
+
         // Make a subsequent request to imdb to get improved movie data
         fetch('http://www.omdbapi.com/?i=' + data.imdb_id + '&apikey=dbbd0a02')
         .then(imdb_results => {
@@ -111,10 +115,20 @@ class MoviePage extends Component {
 
   render() {
     return (
-      <div className='single-movie-page'>
-        <h1>{this.state.movieResponse.Title}</h1>
-        <img src={this.state.movieResponse.Poster} alt={this.state.movieResponse.Title}/>
-        <p>{this.state.movieResponse.Plot}</p>
+      <div className='single-movie-page' style={{backgroundImage: `linear-gradient(rgba(63, 65, 72, 0.75), rgba(63, 65, 72, 0.75)), url(https://image.tmdb.org/t/p/original${this.state.movieBackdrop})`}}>
+        <div className='container c-movie'>
+          <div className='c-movie__info'>
+            <h1 className='c-movie__title'>{this.state.movieResponse.Title} <span className='c-movie__year'>({this.state.movieResponse.Year})</span></h1>
+            <ul className='c-movie__genre'>
+              <li>{this.state.movieResponse.Genre}</li>
+            </ul>
+            <p className='c-movie__plot'>{this.state.movieResponse.Plot}</p>
+            <a href={`https://www.imdb.com/title/${this.state.movieResponse.imdbID}`}><h3 className='c-movie__rating'>{this.state.movieResponse.imdbRating}<span className='out-of-ten'>/10</span></h3></a>
+          </div>
+          <div className='c-movie__poster'>
+            <img src={this.state.movieResponse.Poster} alt={this.state.movieResponse.Title}/>
+          </div>
+        </div>
       </div>
     );
   }
@@ -123,7 +137,7 @@ class MoviePage extends Component {
 class Main extends Component {
   render() {
     return (
-      <div className='container'>
+      <div className='movie-app'>
         <Switch>
           <Route exact path='/' component={MovieSearch}/>
           <Route path='/item/:number' component={MoviePage}/>

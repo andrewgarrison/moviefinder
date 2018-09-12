@@ -1,8 +1,18 @@
 @import url("https://use.typekit.net/qqp0ykk.css");
 
+@blue: #6094B5;
+
 body {
     font-family: "futura-pt", sans-serif;
     background-color: #ececec;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:visited {
+    color: initial;
 }
 
 .container {
@@ -36,7 +46,7 @@ body {
         border-radius: 4px;
         margin-left: 10px;
         font-size: 16px;
-        background-color: #DB3933;
+        background-color: @blue;
         cursor: pointer;
         color: #FCFCFC;
         font-family: "futura-pt";
@@ -59,10 +69,14 @@ body {
         height: auto;
         margin: 20px;
         background-color: #fff;
-        box-shadow: 0 14px 28px rgba(0,0,0,0.05), 0 10px 10px rgba(0,0,0,0.02);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+
+        &:hover {
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        }
 
         &__link {
-            text-decoration: none;
             color: #333;
         }
 
@@ -84,4 +98,72 @@ body {
             margin-top: 0;
         }
     }
+}
+
+.single-movie-page {
+    height: auto;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #fff;
+
+    .c-movie {
+        height: 100%;
+        padding: 120px 0;
+        display: flex;
+        align-items: start;
+        justify-content: center;
+
+        &__info {
+            margin-right: 20px;
+        }
+
+        &__poster {
+            margin-left: 20px;
+        }
+
+        &__title {
+            font-size: 52px;
+            margin-bottom: 0.25em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        &__year {
+            font-size: 29px;
+            font-weight: lighter;
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        &__genre {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0;
+            text-transform: uppercase;
+            font-size: 16px;
+            letter-spacing: 0.1em;
+        }
+
+        &__plot {
+            max-width: 850px;
+            font-size: 20px;
+        }
+
+        &__rating {
+            color: #fff;
+
+            &:before {
+                content: url('https://image.ibb.co/gL9aH9/imdlogo.png');
+                display: inline-block;
+                position: relative;
+                top: 3px;
+                margin-right: 8px;
+            }
+        }
+    }
+}
+
+.out-of-ten {
+    font-size: 12px;
+    font-weight: lighter;
 }
