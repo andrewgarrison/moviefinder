@@ -145,7 +145,7 @@ class MoviePage extends Component {
         this.setState({movieBackdrop: 'https://image.tmdb.org/t/p/original' + data.backdrop_path})
 
         // Make a subsequent request to imdb to get improved movie data
-        fetch('http://www.omdbapi.com/?i=' + data.imdb_id + '&apikey=dbbd0a02')
+        fetch('https://www.omdbapi.com/?i=' + data.imdb_id + '&apikey=dbbd0a02')
         .then(imdb_results => {
           return imdb_results.json();
         }).then(imdb_data => {
