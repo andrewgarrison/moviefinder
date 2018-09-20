@@ -2,6 +2,7 @@
   "name": "cast",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://gifted-colden-c16d87.netlify.com/",
   "dependencies": {
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
