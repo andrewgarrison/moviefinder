@@ -15,6 +15,11 @@ a:visited {
     color: initial;
 }
 
+.uppercase {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
 .container {
     margin: 0 160px;
 }
@@ -50,6 +55,10 @@ a:visited {
         cursor: pointer;
         color: #FCFCFC;
         font-family: "futura-pt";
+
+        &:visited {
+            color: #FCFCFC;
+        }
     }
 }
 
@@ -139,9 +148,20 @@ a:visited {
             list-style-type: none;
             padding-left: 0;
             margin-top: 0;
-            text-transform: uppercase;
-            font-size: 16px;
-            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.85);
+
+            li {
+                display: inline;
+                margin-right: 16px;
+
+                strong {
+                    border: 1px solid;
+                    padding: 4px;
+                    font-size: 14px;
+                    position: relative;
+                    bottom: 2px;
+                }
+            }
         }
 
         &__plot {

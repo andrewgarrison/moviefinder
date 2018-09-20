@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { Switch, Link, HashRouter, Route } from 'react-router-dom';
 import './App.less';
 
-class MovieSearch extends Component {
+class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValue: '',
-      movieResponse: []
+      inputValue: ''
     };
   }
 
@@ -17,8 +16,49 @@ class MovieSearch extends Component {
     });
   }
 
-  getMovieResults() {
-    fetch('https://api.themoviedb.org/3/search/movie?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US&query=' + this.state.inputValue)
+  render() {
+    return (
+      <div className='container'>
+        <div className='c-search'>
+          <input type="text" value={this.state.inputValue} onChange={evt => this.updateInputValue(evt)} className='c-search__input' placeholder='Search for Movies'></input>
+          <Link className='c-search__submit' to={`/search/${this.state.inputValue}`} replace>Find Movie</Link>
+        </div>
+      </div>
+    );
+  }
+}
+
+class SearchResults extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      movieResponse: []
+    };
+  }
+  
+  _isMounted = false;
+
+  getQueryString() {
+    const url = window.location.href;
+    let id = url.substring(url.indexOf("search") + 7, url.length);
+    return id;
+  }
+
+  componentDidMount() {
+    this.fetchSearchResults();
+    this._isMounted = true;
+  }
+
+  componentDidUpdate() {
+    this.fetchSearchResults();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  fetchSearchResults() {
+    fetch('https://api.themoviedb.org/3/search/movie?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US&query=' + this.getQueryString())
     .then(results => {
       return results.json();
     }).then(data => {
@@ -31,7 +71,11 @@ class MovieSearch extends Component {
               </Link>
           )
         });
-        this.setState({movieResponse: movies})
+
+        if (this._isMounted) {
+          this.setState({movieResponse: movies});
+        }
+
       } else {
         this.setState({movieResponse: `Sorry! We couldn't find a movie title matching "${this.state.inputValue}". Please update your search and try again.`})
       }
@@ -40,15 +84,12 @@ class MovieSearch extends Component {
 
   render() {
     return (
-      <div className='container'>
-        <div className='c-search'>
-          <input type="text" value={this.state.inputValue} onChange={evt => this.updateInputValue(evt)} className='c-search__input' placeholder='Search for Movies'></input>
-          <button className='c-search__submit' onClick={() => this.getMovieResults()}>Find Movie</button>
-        </div>
-        <div className='c-results'>
-          {this.state.movieResponse}
-        </div>
+    <div>
+      <Search/>
+      <div className='c-results'>
+        {this.state.movieResponse}
       </div>
+    </div>
     );
   }
 }
@@ -101,7 +142,7 @@ class MoviePage extends Component {
       return results.json();
     }).then(data => {
         // store tmdb backdrop
-        this.setState({movieBackdrop: data.backdrop_path})
+        this.setState({movieBackdrop: 'https://image.tmdb.org/t/p/original' + data.backdrop_path})
 
         // Make a subsequent request to imdb to get improved movie data
         fetch('http://www.omdbapi.com/?i=' + data.imdb_id + '&apikey=dbbd0a02')
@@ -115,14 +156,17 @@ class MoviePage extends Component {
 
   render() {
     return (
-      <div className='single-movie-page' style={{backgroundImage: `linear-gradient(rgba(63, 65, 72, 0.75), rgba(63, 65, 72, 0.75)), url(https://image.tmdb.org/t/p/original${this.state.movieBackdrop})`}}>
+      <div className='single-movie-page' style={{backgroundImage: `linear-gradient(rgba(63, 65, 72, 0.75), rgba(63, 65, 72, 0.75)), url(${this.state.movieBackdrop})`}}>
         <div className='container c-movie'>
           <div className='c-movie__info'>
             <h1 className='c-movie__title'>{this.state.movieResponse.Title} <span className='c-movie__year'>({this.state.movieResponse.Year})</span></h1>
             <ul className='c-movie__genre'>
+              <li><strong>{this.state.movieResponse.Rated}</strong></li>
+              <li>{this.state.movieResponse.Runtime}</li>
               <li>{this.state.movieResponse.Genre}</li>
             </ul>
             <p className='c-movie__plot'>{this.state.movieResponse.Plot}</p>
+            <p><strong>Starring:</strong> {this.state.movieResponse.Actors}</p>
             <a href={`https://www.imdb.com/title/${this.state.movieResponse.imdbID}`}><h3 className='c-movie__rating'>{this.state.movieResponse.imdbRating}<span className='out-of-ten'>/10</span></h3></a>
           </div>
           <div className='c-movie__poster'>
@@ -139,7 +183,9 @@ class Main extends Component {
     return (
       <div className='movie-app'>
         <Switch>
-          <Route exact path='/' component={MovieSearch}/>
+          <Route exact path='/' component={Search}/>
+          <Route exact path='/search' component={Search}/>
+          <Route exact path='/search/:term' component={SearchResults}/>
           <Route path='/item/:number' component={MoviePage}/>
         </Switch>
       </div>
