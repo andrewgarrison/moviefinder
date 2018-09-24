@@ -45,12 +45,16 @@ class SearchResults extends Component {
   }
 
   componentDidMount() {
-    this.fetchSearchResults();
     this._isMounted = true;
+    this.fetchSearchResults();
   }
 
-  componentDidUpdate() {
-    this.fetchSearchResults();
+  componentDidUpdate(prevProps) {
+    let oldId = prevProps.match.params.term;
+    let newId = this.props.match.params.term;
+    if (newId !== oldId) {
+      this.fetchSearchResults();
+    }
   }
 
   componentWillUnmount() {
@@ -185,7 +189,7 @@ class Main extends Component {
         <Switch>
           <Route exact path='/' component={Search}/>
           <Route exact path='/search' component={Search}/>
-          <Route exact path='/search/:term' component={SearchResults}/>
+          <Route path='/search/:term' component={SearchResults}/>
           <Route path='/item/:number' component={MoviePage}/>
         </Switch>
       </div>
