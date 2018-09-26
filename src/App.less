@@ -19,6 +19,14 @@ a:visited {
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
+.flex {
+    display: flex;
+}
+
+.flex--center {
+    align-items: center;
+    justify-content: center;
+}
 
 .container {
     margin: 0 20px;
@@ -40,6 +48,36 @@ a:visited {
     }
 }
 
+.c-btn {
+    padding: 10px 30px;
+    margin: 10px 0;
+    display: inline-block;
+    border: 0;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: "futura-pt";
+    font-weight: bolder;
+}
+
+.c-secondary-btn {
+    background-color: #fff;
+    color: #000;
+
+    &:visited {
+        color: #000;
+    }
+}
+
+.c-primary-btn {
+    background-color: @blue;
+    color: #fff;
+
+    &:visited {
+        color: #fff;
+    }
+}
+
 .c-search {
         margin: 60px 0; 
         padding: 40px 20px;
@@ -47,6 +85,7 @@ a:visited {
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         border-radius: 5px;
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: center;
 
@@ -63,19 +102,7 @@ a:visited {
     }
 
     &__submit {
-        padding: 10px 20px;
-        border: 0;
-        border-radius: 4px;
         margin-left: 10px;
-        font-size: 16px;
-        background-color: @blue;
-        cursor: pointer;
-        color: #FCFCFC;
-        font-family: "futura-pt";
-
-        &:visited {
-            color: #FCFCFC;
-        }
     }
 }
 
@@ -136,7 +163,6 @@ a:visited {
 .single-movie-page {
     height: auto;
     width: 100%;
-    background-size: cover;
     background-repeat: no-repeat;
     color: #fff;
 
@@ -145,7 +171,7 @@ a:visited {
         width: 39px;
         position: absolute;
         top: 30px;
-        left: 30px;
+        left: 20px;
         cursor: pointer;
     }
 
@@ -153,15 +179,25 @@ a:visited {
         height: 100%;
         padding: 120px 0;
         display: flex;
-        align-items: start;
-        justify-content: center;
+        flex-wrap: wrap-reverse;
+
+        @media (min-width: 980px) {
+            flex-wrap: nowrap;
+            align-items: start;
+            justify-content: center;
+            flex-direction: row;
+        }
 
         &__info {
-            margin-right: 20px;
+            @media (min-width: 980px) {
+                margin-right: 20px;
+            }
         }
 
         &__poster {
-            margin-left: 20px;
+            @media (min-width: 980px) {
+                margin-left: 20px;
+            }
         }
 
         &__title {
@@ -212,6 +248,12 @@ a:visited {
                 top: 3px;
                 margin-right: 8px;
             }
+        }
+
+        .c-play-icon {
+            position: relative;
+            top: 2px;
+            margin-left: 8px;
         }
     }
 }

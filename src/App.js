@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Switch, Link, HashRouter, Route } from 'react-router-dom';
 import PropTypes from 'prop-types'
 import Genres from './genres.js';
-import './App.less';
 import BackArrow from './arrow-left.svg';
+import PlayIcon from './play-circle.svg';
+import './App.less';
 
 class Search extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class Search extends Component {
       <div className='container'>
         <div className='c-search'>
           <input type="text" value={this.state.inputValue} onChange={evt => this.updateInputValue(evt)} className='c-search__input' placeholder='Search for Movies'></input>
-          <Link className='c-search__submit' to={`/search/${this.state.inputValue}`} replace>Find Movie</Link>
+          <Link className='c-search__submit c-btn c-primary-btn' to={`/search/${this.state.inputValue}`} replace>Find Movie</Link>
         </div>
       </div>
     );
@@ -78,7 +79,7 @@ class SearchResults extends Component {
             }
 
             // list remaining genres with a comma
-            for (var i = 1; i < movie.genre_ids.length; i++) {
+            for (let i = 1; i < movie.genre_ids.length; i++) {
               genreList += ', ' + Genres[movie.genre_ids[i]];
             }
 
@@ -147,18 +148,13 @@ class MoviePage extends Component {
     super(props);
     this.state = {
       movieResponse: [],
-      movieBackdrop: ''
+      movieBackdrop: '',
+      movieTrailer: ''
     };
   }
 
-  getQueryString() {
-    const url = window.location.href;
-    let id = url.substring(url.indexOf("item") + 5, url.length);
-    return id;
-  }
-
   componentDidMount() {
-    fetch('https://api.themoviedb.org/3/movie/' + this.getQueryString() + '?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US')
+    fetch(`https://api.themoviedb.org/3/movie/${this.props.match.params.number}?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US`)
     .then(results => {
       return results.json();
     }).then(data => {
@@ -173,6 +169,22 @@ class MoviePage extends Component {
           this.setState({movieResponse: imdb_data})
         });
     })
+
+    // get movie trailer link
+    fetch(`https://api.themoviedb.org/3/movie/${this.props.match.params.number}/videos?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US`)
+    .then(results => {
+      return results.json();
+    }).then(data => {
+      // store trailer link
+      if (data.results.length) {
+        for (let i = 0; i < data.results.length; i++) {
+          if (data.results[i].type === 'Trailer') {
+            this.setState({movieTrailer: data.results[0].key});
+            break;
+          }
+        }
+      }
+    });
   }
 
   render() {
@@ -190,6 +202,14 @@ class MoviePage extends Component {
             <p className='c-movie__plot'>{this.state.movieResponse.Plot}</p>
             <p><strong>Starring:</strong> {this.state.movieResponse.Actors}</p>
             <a href={`https://www.imdb.com/title/${this.state.movieResponse.imdbID}`}><h3 className='c-movie__rating'>{this.state.movieResponse.imdbRating}<span className='out-of-ten'>/10</span></h3></a>
+            {this.state.movieTrailer !== '' &&
+              <a href={`https://www.youtube.com/watch?v=${this.state.movieTrailer}`} className='c-btn c-secondary-btn'>
+                <div className='flex flex--center'>
+                  <div>Watch Trailer</div> 
+                  <div><img src={PlayIcon} alt='Play Icon' className='c-play-icon'/></div>
+                </div>
+              </a>
+            }
           </div>
           <div className='c-movie__poster'>
             <img src={this.state.movieResponse.Poster} alt={this.state.movieResponse.Title}/>
