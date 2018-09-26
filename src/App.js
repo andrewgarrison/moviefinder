@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Switch, Link, HashRouter, Route } from 'react-router-dom';
+import PropTypes from 'prop-types'
 import Genres from './genres.js';
 import './App.less';
+import BackArrow from './arrow-left.svg';
 
 class Search extends Component {
   constructor(props) {
@@ -176,6 +178,7 @@ class MoviePage extends Component {
   render() {
     return (
       <div className='single-movie-page' style={{backgroundImage: `linear-gradient(rgba(63, 65, 72, 0.75), rgba(63, 65, 72, 0.75)), url(${this.state.movieBackdrop})`}}>
+        <BackButton/>
         <div className='container c-movie'>
           <div className='c-movie__info'>
             <h1 className='c-movie__title'>{this.state.movieResponse.Title} <span className='c-movie__year'>({this.state.movieResponse.Year})</span></h1>
@@ -193,6 +196,18 @@ class MoviePage extends Component {
           </div>
         </div>
       </div>
+    );
+  }
+}
+
+class BackButton extends Component {
+  static contextTypes = {
+    router: PropTypes.object
+  }
+
+  render() {
+    return (
+      <img src={BackArrow} alt="Back Arrow" className='c-arrow--back' onClick={this.context.router.history.goBack}/>
     );
   }
 }
