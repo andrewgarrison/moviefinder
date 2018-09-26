@@ -38,12 +38,6 @@ class SearchResults extends Component {
   
   _isMounted = false;
 
-  getQueryString() {
-    const url = window.location.href;
-    let id = url.substring(url.indexOf("search") + 7, url.length);
-    return id;
-  }
-
   componentDidMount() {
     this._isMounted = true;
     this.fetchSearchResults();
@@ -62,18 +56,23 @@ class SearchResults extends Component {
   }
 
   fetchSearchResults() {
-    fetch('https://api.themoviedb.org/3/search/movie?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US&query=' + this.getQueryString())
+    fetch(`https://api.themoviedb.org/3/search/movie?api_key=53f9a01f084ff957f8d4f94dbd002089&language=en-US&query=${this.props.match.params.term}`)
     .then(results => {
       return results.json();
     }).then(data => {
-      if (data.results && data.results.length > 0) {
+      if (data.results && data.results.length) {
         let movies = data.results.map((movie) => {
-          let posterPath = 'https://image.tmdb.org/t/p/w342' + movie.poster_path;
-          return (
-              <Link className='c-result__link' key={movie.id} to={`/item/${movie.id}`}>
-                <MovieCard name={movie.original_title} poster={posterPath} rating={movie.vote_average}/>
-              </Link>
-          )
+          if (movie.poster_path != null) {
+            let posterPath = 'https://image.tmdb.org/t/p/w342' + movie.poster_path;
+            return (
+                <Link className='c-result__link' key={movie.id} to={`/item/${movie.id}`}>
+                  <MovieCard name={movie.original_title} poster={posterPath} rating={movie.vote_average}/>
+                </Link>
+            )
+          }
+
+          // if no poster path return empty
+          return '';
         });
 
         if (this._isMounted) {
@@ -81,7 +80,7 @@ class SearchResults extends Component {
         }
 
       } else {
-        this.setState({movieResponse: `Sorry! We couldn't find a movie title matching "${this.state.inputValue}". Please update your search and try again.`})
+        this.setState({movieResponse: `Sorry! We couldn't find a movie title matching "${this.props.match.params.term}". Please update your search and try again.`})
       }
     })
   }
@@ -153,6 +152,7 @@ class MoviePage extends Component {
         .then(imdb_results => {
           return imdb_results.json();
         }).then(imdb_data => {
+          console.log(imdb_data);
           this.setState({movieResponse: imdb_data})
         });
     })
