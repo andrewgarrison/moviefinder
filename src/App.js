@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Link, HashRouter, Route } from 'react-router-dom';
+import Genres from './genres.js';
 import './App.less';
 
 class Search extends Component {
@@ -62,11 +63,26 @@ class SearchResults extends Component {
     }).then(data => {
       if (data.results && data.results.length) {
         let movies = data.results.map((movie) => {
-          if (movie.poster_path != null) {
+          // weed out some bad results
+          if (movie.poster_path !== null && movie.release_date !== '' && movie.genre_ids.length !== 0) {
             let posterPath = 'https://image.tmdb.org/t/p/w342' + movie.poster_path;
+            let genreList;
+
+            // map through numerical genres and assign them a proper name
+
+            // list first genre
+            if (movie.genre_ids.length > 0) {
+              genreList = Genres[movie.genre_ids[0]];
+            }
+
+            // list remaining genres with a comma
+            for (var i = 1; i < movie.genre_ids.length; i++) {
+              genreList += ', ' + Genres[movie.genre_ids[i]];
+            }
+
             return (
                 <Link className='c-result__link' key={movie.id} to={`/item/${movie.id}`}>
-                  <MovieCard name={movie.original_title} poster={posterPath} rating={movie.vote_average}/>
+                  <MovieCard poster={posterPath} name={movie.original_title} release_year={movie.release_date} genres={genreList}/>
                 </Link>
             )
           }
@@ -100,9 +116,9 @@ class SearchResults extends Component {
 class MovieCard extends Component {
   trim(text) {
     let textLength = text.length;
-    let trimmedOverview = text.substring(0, 18);
+    let trimmedOverview = text.substring(0, 15);
 
-    if (textLength > 18) {
+    if (textLength > 15) {
       return trimmedOverview + '...';
     } 
 
@@ -116,8 +132,8 @@ class MovieCard extends Component {
           <img src={this.props.poster} alt={this.props.name}/>
         </div>
         <div className='c-result__info'>
-          <h2 className='c-result__title'>{this.trim(this.props.name)}</h2>
-          <span className='c-result__rating'>TMDb Rating: <strong>{this.props.rating}</strong></span>
+          <h2 className='c-result__title'>{this.trim(this.props.name)} ({this.props.release_year.substring(0, 4)})</h2>
+          <span className='c-result__genres'>{this.props.genres}</span>
         </div>
       </div>
     );
@@ -152,7 +168,6 @@ class MoviePage extends Component {
         .then(imdb_results => {
           return imdb_results.json();
         }).then(imdb_data => {
-          console.log(imdb_data);
           this.setState({movieResponse: imdb_data})
         });
     })
