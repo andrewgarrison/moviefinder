@@ -161,10 +161,32 @@ a:visited {
 }
 
 .single-movie-page {
-    height: auto;
-    width: 100%;
-    background-repeat: no-repeat;
     color: #fff;
+    background-color: #3F4148;
+
+    @media (min-width: 980px) {
+        background-color: initial;
+    }
+
+    .c-backdrop {
+        position: relative;
+        width: 100%;
+        height: 56.5vw;
+        background-size: contain;
+        background-repeat: no-repeat;
+
+        @media (min-width: 980px) {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-size: cover;
+            z-index: -1;
+        }
+    }
 
     .c-arrow--back {
         height: 26px;
@@ -173,10 +195,11 @@ a:visited {
         top: 30px;
         left: 20px;
         cursor: pointer;
+        z-index: 100;
     }
 
     .c-movie {
-        height: 100%;
+        height: auto;
         padding: 120px 0;
         display: flex;
         flex-wrap: wrap-reverse;
@@ -195,8 +218,25 @@ a:visited {
         }
 
         &__poster {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+            margin-top: -220px;
+            margin-bottom: 32px;
+            z-index: 1;
+
             @media (min-width: 980px) {
+                margin: initial;
                 margin-left: 20px;
+                margin-top: 0;
+            }
+
+            img {
+                max-width: 75%;
+
+                @media (min-width: 768px) {
+                    max-width: none;
+                }
             }
         }
 

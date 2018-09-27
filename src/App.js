@@ -189,7 +189,8 @@ class MoviePage extends Component {
 
   render() {
     return (
-      <div className='single-movie-page' style={{backgroundImage: `linear-gradient(rgba(63, 65, 72, 0.75), rgba(63, 65, 72, 0.75)), url(${this.state.movieBackdrop})`}}>
+      <div className='single-movie-page'>
+        <div className='c-backdrop' style={{backgroundImage: `linear-gradient(rgba(63, 65, 72, 0.65), rgba(63, 65, 72, 0.65)), url(${this.state.movieBackdrop})`}}></div>
         <BackButton/>
         <div className='container c-movie'>
           <div className='c-movie__info'>
