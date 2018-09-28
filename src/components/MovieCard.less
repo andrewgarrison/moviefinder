@@ -1,0 +1,41 @@
+.c-result {
+    width: 333px;
+    height: auto;
+    margin: 20px;
+    background-color: #fff;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+
+    &:hover {
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
+
+    &__link {
+        color: #333;
+    }
+
+    &__image {
+        padding: 0;
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+    }
+
+    &__info {
+        padding: 20px;
+        background-color: #fff;
+    }
+
+    &__title {
+        margin-top: 0;
+        margin-bottom: 4px;
+        font-size: 24px;
+    }
+
+    &__genres {
+        font-size: 16px;
+        color: grey;
+    }
+}
