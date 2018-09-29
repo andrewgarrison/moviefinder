@@ -81,8 +81,10 @@ class SearchResults extends Component {
       return (
       <div>
         <Search/>
-        <div className='c-results'>
-          {this.state.movieResponse}
+        <div className='container'>
+          <div className='c-results'>
+            {this.state.movieResponse}
+          </div>
         </div>
       </div>
       );
