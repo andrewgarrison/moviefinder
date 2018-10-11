@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Cheerio from 'cheerio'
 import './MoviePage.less';
 import BackButton from './BackButton';
 import PlayIcon from '../assets/img/play-circle.svg';
@@ -10,8 +9,7 @@ class MoviePage extends Component {
       this.state = {
         movieResponse: [],
         movieBackdrop: '',
-        movieTrailer: '',
-        netflixMovies: []
+        movieTrailer: ''
       };
     }
   
@@ -48,21 +46,6 @@ class MoviePage extends Component {
           }
         }
       });
-
-      // is it on netflix?
-      fetch('https://www.finder.com/netflix-movies')
-      .then(response => {
-        if (response.status === 200) {
-          return response.text();
-        }
-      }).then(result => {
-          let netflixList = [];
-          const $ = Cheerio.load(result);
-          $('.custom-table td b').each(function(i) {
-            netflixList[i] = $(this).text();
-          });
-          this.setState({netflixMovies: netflixList});
-      });
     } 
   
     render() {
@@ -82,9 +65,6 @@ class MoviePage extends Component {
               <p><strong>Starring:</strong> {this.state.movieResponse.Actors}</p>
               <a href={`https://www.imdb.com/title/${this.state.movieResponse.imdbID}`}><h3 className='c-movie__rating'>{this.state.movieResponse.imdbRating}<span className='out-of-ten'>/10</span></h3></a>
               <div className='c-btn-row'>
-                {this.onNetflix(this.state.movieResponse.Title) &&
-                  <a href={`https://www.netflix.com/search?q=${this.state.movieResponse.Title}`} className='c-btn c-primary-btn'>Watch on Netflix</a>
-                }
                 {this.state.movieTrailer !== '' &&
                   <a href={`https://www.youtube.com/watch?v=${this.state.movieTrailer}`} className='c-btn c-secondary-btn'>
                     <div className='flex flex--center'>
@@ -101,10 +81,6 @@ class MoviePage extends Component {
           </div>
         </div>
       );
-    }
-
-    onNetflix(title) {
-      return (this.state.netflixMovies.indexOf(title) > -1);   
     }
   }
 
